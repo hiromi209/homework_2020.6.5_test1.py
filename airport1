@@ -1,0 +1,50 @@
+from dronekit import connect, VehicleMode, LocationGlobalRelative
+import time
+
+# vehicle = connect('127.0.0.1:14550', wait_ready=True)
+vehicle = connect('tcp:127.0.0.1:5762', wait_ready=True)
+
+# set the target altitude
+targetAltitude = 20
+
+# modes(GUIDED)
+guided = VehicleMode("GUIDED")
+
+# modes(LOITER)
+loiter = VehicleMode("LOITER")
+
+# armable
+vehicle.wait_for_armable(30)
+print("Vehicle is armable")
+
+# mode guided
+vehicle.wait_for_mode(guided)
+print("Mode is changed")
+
+# Arm
+vehicle.arm(wait=True)
+print("Armed {}".format(vehicle.armed))
+
+# Take off 
+print("Take off!!")
+vehicle.wait_simple_takeoff(targetAltitude, 0.5, 30)
+
+#WP1
+print("WP1 aLocationGlobalRelative")
+WP1 = LocationGlobalRelative(-35.3635410,149.1632223,20)
+
+# simple_goto
+print("simple goto")
+vehicle.simple_goto(WP1)
+
+#time.sleep
+print("time.sleep")
+time.sleep(30)
+
+# RTL
+print("Returning to Launch")
+vehicle.mode = VehicleMode("RTL")
+
+# Close vehicle object before exiting script
+print("Close vehicle object")
+vehicle.close()
