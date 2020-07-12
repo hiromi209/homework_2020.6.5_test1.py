@@ -1,10 +1,9 @@
-#完成　KARUIZAWA WP1/WP2/WP3/WP4&ZigZag
+#完成　KazakoshiPark_01 2020.07.19
 #ネーミング「満塁ホームランと喜びの舞」
-#場所　kazakoshiPark
 #リスナー付き GPS情報の更新を表示
 #Parametersのイテレーターを利用し、順にパラメータ-を参照
 
-#ZigZag 参考資料　下記Copy 523行　一部方向変更
+#参考資料　下記Copy 523行　一部方向変更
 """
 © Copyright 2015-2016, 3D Robotics.
 guided_set_speed_yaw.py: (Copter Only)
