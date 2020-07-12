@@ -1,0 +1,292 @@
+#完成　KARUIZAWA WP1/WP2/WP3/WP4&ZigZag
+#ネーミング「満塁ホームランと喜びの舞」
+#場所　kazakoshiPark
+#リスナー付き GPS情報の更新を表示
+#Parametersのイテレーターを利用し、順にパラメータ-を参照
+
+#ZigZag 参考資料　下記Copy 523行　一部方向変更
+"""
+© Copyright 2015-2016, 3D Robotics.
+guided_set_speed_yaw.py: (Copter Only)
+
+This example shows how to move/direct Copter and send commands in GUIDED mode using DroneKit Python.
+
+Example documentation: http://python.dronekit.io/examples/guided-set-speed-yaw-demo.html
+"""
+
+from dronekit import connect, VehicleMode, LocationGlobalRelative
+from dronekit import connect, VehicleMode
+from pymavlink import mavutil # Needed for command message definitions
+import time
+
+# vehicle = connect('127.0.0.1:14550', wait_ready=True)
+vehicle = connect('tcp:127.0.0.1:5762', wait_ready=True)
+
+# Parameterの参照
+# Iteritemsにて順print文で「Key: Value」を表示
+for key, value in vehicle.parameters.iteritems():
+    print "Key: %s Value:%s" % (key, value) 
+
+# set the target altitude
+targetAltitude = 10
+
+# modes(GUIDED)
+guided = VehicleMode("GUIDED")
+
+# modes(LOITER)
+loiter = VehicleMode("LOITER")
+
+# armable
+vehicle.wait_for_armable(30)
+print("Vehicle is armable")
+
+# mode guided
+vehicle.wait_for_mode(guided)
+print("Mode is changed")
+
+# Arm
+vehicle.arm(wait=True)
+print("Armed {}".format(vehicle.armed))
+
+# Take off 
+print("Take off!!")
+vehicle.wait_simple_takeoff(targetAltitude, 0.5, 10)
+
+#WP1
+print("WP1 aLocationGlobalRelative")
+WP1 = LocationGlobalRelative(36.3216713,138.5959625,10)
+
+# simple_goto
+print("simple goto")
+vehicle.simple_goto(WP1)
+
+#time.sleep
+print("time.sleep")
+time.sleep(10)
+
+# listener
+def location_callback(self, attr, val):
+    print(attr)
+    print(val)
+
+# Regist listener
+vehicle.add_attribute_listener("location.global_frame", location_callback)
+time.sleep(10)
+
+# Unregist listener
+vehicle.remove_attribute_listener("location.global_frame", location_callback)
+
+#WP2
+print("WP2 aLocationGlobalRelative")
+WP2 = LocationGlobalRelative(36.3216259,138.5962629,10)
+
+# simple_goto
+print("simple goto")
+vehicle.simple_goto(WP2)
+
+#time.sleep
+print("time.sleep")
+time.sleep(10)
+
+# listener
+def location_callback(self, attr, val):
+    print(attr)
+    print(val)
+
+# Regist listener
+vehicle.add_attribute_listener("location.global_frame", location_callback)
+time.sleep(10)
+
+# Unregist listener
+vehicle.remove_attribute_listener("location.global_frame", location_callback)
+
+
+#WP3
+print("WP3 aLocationGlobalRelative")
+WP3 = LocationGlobalRelative(36.3218550,138.5963166,10)
+
+# simple_goto
+print("simple goto")
+vehicle.simple_goto(WP3)
+
+#time.sleep
+print("time.sleep")
+time.sleep(10)
+
+# listener
+def location_callback(self, attr, val):
+    print(attr)
+    print(val)
+
+# Regist listener
+vehicle.add_attribute_listener("location.global_frame", location_callback)
+time.sleep(10)
+
+# Unregist listener
+vehicle.remove_attribute_listener("location.global_frame", location_callback)
+
+#WP4
+print("WP4 aLocationGlobalRelative")
+WP4 = LocationGlobalRelative(36.3219089,138.5960211,10)
+
+# simple_goto
+print("simple goto")
+vehicle.simple_goto(WP4)
+
+#time.sleep
+print("time.sleep")
+time.sleep(10)
+
+# listener
+def location_callback(self, attr, val):
+    print(attr)
+    print(val)
+
+# Regist listener
+vehicle.add_attribute_listener("location.global_frame", location_callback)
+time.sleep(10)
+
+# Unregist listener
+vehicle.remove_attribute_listener("location.global_frame", location_callback)
+
+
+
+#完成　2塁へジグザグ 方向南へUP→東へDown
+#zigzag KARUIZAWA
+
+# set the target altitude
+targetAltitude = 15
+
+#WP5
+print("WP5 aLocationGlobalRelative")
+WP5 = LocationGlobalRelative(36.3219089,138.5960211,15)
+
+# listener
+def location_callback(self, attr, val):
+    print(attr)
+    print(val)
+
+# Regist listener
+vehicle.add_attribute_listener("location.global_frame", location_callback)
+time.sleep(10)
+
+# Unregist listener
+vehicle.remove_attribute_listener("location.global_frame", location_callback)
+
+# simple_goto
+print("simple goto")
+vehicle.simple_goto(WP5)
+
+#time.sleep
+print("time.sleep")
+time.sleep(10)
+
+# Paramerersの参照
+# Interitemsにて順print文で「Key: Value」を表示
+for key, value in vehicle.parameters.iteritems():
+    print "Key: %s Value:%s" % (key, value) 
+
+
+##########  copy from guided_set_speed_yaw.py ##########################
+
+def condition_yaw(heading, relative=False):
+    if relative:
+        is_relative = 1 #yaw relative to direction of travel
+    else:
+        is_relative = 0 #yaw is an absolute angle
+    # create the CONDITION_YAW command using command_long_encode()
+    msg = vehicle.message_factory.command_long_encode(
+        0, 0,    # target system, target component
+        mavutil.mavlink.MAV_CMD_CONDITION_YAW, #command
+        0, #confirmation
+        heading,    # param 1, yaw in degrees
+        0,          # param 2, yaw speed deg/s
+        1,          # param 3, direction -1 ccw, 1 cw
+        is_relative, # param 4, relative offset 1, absolute angle 0
+        0, 0, 0)    # param 5 ~ 7 not used
+    # send command to vehicle
+    vehicle.send_mavlink(msg)
+
+
+def send_ned_velocity(velocity_x, velocity_y, velocity_z, duration):
+    msg = vehicle.message_factory.set_position_target_local_ned_encode(
+        0,       # time_boot_ms (not used)
+        0, 0,    # target system, target component
+        mavutil.mavlink.MAV_FRAME_LOCAL_NED, # frame
+        0b0000111111000111, # type_mask (only speeds enabled)
+        0, 0, 0, # x, y, z positions (not used)
+        velocity_x, velocity_y, velocity_z, # x, y, z velocity in m/s
+        0, 0, 0, # x, y, z acceleration (not supported yet, ignored in GCS_Mavlink)
+        0, 0)    # yaw, yaw_rate (not supported yet, ignored in GCS_Mavlink) 
+
+    # send command to vehicle on 1 Hz cycle
+    for x in range(0,duration):
+        vehicle.send_mavlink(msg)
+        time.sleep(1)
+
+   
+# Set velocity and duration parameters
+DURATION = 5 #Set duration for each segment.
+NORTH = 2
+SOUTH = -2
+EAST = 2
+WEST = -2
+UP = -1
+DOWN = 1
+
+# Square path using velocity
+print("zigzag path using SET_POSITION_TARGET_LOCAL_NED and velocity parameters")
+steps = 3
+for step in range(steps):
+
+    print("Yaw 180 absolute (South)")
+    condition_yaw(180)
+
+    print("Velocity South & up")
+    send_ned_velocity(SOUTH,0,UP,DURATION)
+    send_ned_velocity(0,0,0,1)
+
+    # listener
+    def location_callback(self, attr, val):
+      print(attr)
+      print(val)
+
+    # Regist listener
+    vehicle.add_attribute_listener("location.global_frame", location_callback)
+    time.sleep(10)
+
+    # Unregist listener
+    vehicle.remove_attribute_listener("location.global_frame", location_callback)
+
+
+
+    print("Yaw 90 absolute (East)")
+    condition_yaw(90)
+
+    print("Velocity East & down")
+    send_ned_velocity(0,EAST,DOWN,DURATION)
+    send_ned_velocity(0,0,0,1)
+
+    # listener
+    def location_callback(self, attr, val):
+      print(attr)
+      print(val)
+
+    # Regist listener
+    vehicle.add_attribute_listener("location.global_frame", location_callback)
+    time.sleep(10)
+
+    # Unregist listener
+    vehicle.remove_attribute_listener("location.global_frame", location_callback)
+
+   
+
+##############################################################################
+
+
+print("Returning to Launch")
+vehicle.mode = VehicleMode("RTL")
+
+# Close vehicle object before exiting script
+print("Close vehicle object")
+vehicle.close()
