@@ -36,7 +36,7 @@ guided = VehicleMode("GUIDED")
 loiter = VehicleMode("LOITER")
 
 # armable
-vehicle.wait_for_armable(30)
+vehicle.wait_for_armable(45)
 print("Vehicle is armable")
 
 # mode guided
